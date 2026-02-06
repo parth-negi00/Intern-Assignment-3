@@ -44,12 +44,6 @@ intern-assignment/
 
 Missing or extra files will be considered incomplete submission.
 
-👤 BHAVYA TASKS (Database / Prisma / ER)
-✅ Task A1: Prisma Model Explanation
-For each Prisma model, explain it in simple language.
-Template (Must Use):
-## Model: <ModelName>
-
 ### Purpose
 Explain what this model represents in the system.
 
@@ -68,40 +62,8 @@ Rules:
 ❌ No "self-explanatory" answers
 ✅ A non-technical person should understand it
 
-✅ Task A2: ER Diagram
-Create an Entity Relationship (ER) Diagram using:
-draw.io OR
-dbdiagram.io
-Diagram Must Include:
-All tables (models)
-Primary keys (PK)
-Foreign keys (FK)
-Relationship types:
-One-to-One
-One-to-Many
-Many-to-Many
-Rejection Criteria:
-Missing table
-Wrong relationship
-Extra fields not in schema
 
-✅ Task A3: Data Integrity & Constraints
-For each model, answer:
-Which fields must never be null?
-Which fields must be unique?
-What happens if this record is deleted?
-Should deletion be:
-Cascade
-Restrict
-Soft delete
-
-✅ Task A4: Performance & Scaling (Beginner Level)
-Answer in bullet points:
-Which table will grow fastest?
-Which columns need indexing?
-Example of one slow query
-
-👤 PARTH TASKS (Backend / API / Business Logic)
+👤  TASKS (Backend / API / Business Logic)
 ✅ Task B1: System Understanding
 Answer in plain English:
 What kind of system is this?
