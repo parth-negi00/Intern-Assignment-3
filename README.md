@@ -97,16 +97,7 @@ Status Codes:
 - 400 Bad Request
 
 
-✅ Task B3: Validation Matrix
-Fill the table for each field:
-Field
-Frontend
-Backend
-Database
-Reason
-
-
-✅ Task B4: Roles & Permissions
+✅ Task B3: Roles & Permissions
 Step 1: Define Roles
 Admin
 User
