@@ -1,0 +1,24 @@
+flowchart LR
+    subgraph Input
+        Login[Login Request]
+        Register[Registration]
+    end
+
+    subgraph Processing
+        User[(User)]
+        OTPCode[(OTPCode)]
+        UserSession[(UserSession)]
+    end
+
+    subgraph Output
+        LoginHistory[(LoginHistory)]
+        Token[Session Token]
+    end
+
+    Login --> User
+    Register --> User
+    User --> OTPCode
+    OTPCode --> User
+    User --> UserSession
+    UserSession --> Token
+    User --> LoginHistory

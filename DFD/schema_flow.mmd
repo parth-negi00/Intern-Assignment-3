@@ -1,0 +1,121 @@
+graph TD
+    %% Styling
+    classDef core fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef auth fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
+    classDef access fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px;
+    classDef form fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef data fill:#ffebee,stroke:#b71c1c,stroke-width:2px;
+    classDef hr fill:#e0f7fa,stroke:#006064,stroke-width:2px;
+    classDef system fill:#f5f5f5,stroke:#212121,stroke-width:2px;
+
+    %% Subgraph: Authentication & Identity
+    subgraph Auth_Identity [Authentication & Identity]
+        direction TB
+        User[User]:::core
+        Session[UserSession]:::auth
+        OTP[OTPCode]:::auth
+        LoginHist[LoginHistory]:::auth
+        
+        User -->|Creates| Session
+        User -->|Requests| OTP
+        User -->|Logs| LoginHist
+    end
+
+    %% Subgraph: Organization & Structure
+    subgraph Organization_Struct [Organization Structure]
+        direction TB
+        Org[Organization]:::core
+        OrgUnit[OrganizationUnit]:::core
+        
+        Org -->|Contains| OrgUnit
+        OrgUnit -->|Parent of| OrgUnit
+        User -->|Member of| Org
+    end
+
+    %% Subgraph: Access Control (RBAC)
+    subgraph Access_Control [Access Control]
+        direction TB
+        Role[Role]:::access
+        Perm[Permission]:::access
+        RolePerm[RolePermission]:::access
+        UserPerm[UserPermission]:::access
+        UnitAssign[UserUnitAssignment]:::access
+        Override[UserPermissionOverride]:::access
+        
+        Role -->|Has| RolePerm
+        Perm -->|Defined in| RolePerm
+        User -->|Assigned| UnitAssign
+        OrgUnit -->|Scope for| UnitAssign
+        Role -->|Granted in| UnitAssign
+        
+        User -->|Has Direct| UserPerm
+        User -->|Has Exception| Override
+    end
+
+    %% Subgraph: Form Builder Engine
+    subgraph Form_Engine [Form Builder Engine]
+        direction TB
+        Module[FormModule]:::form
+        FormDef[Form]:::form
+        Section[FormSection]:::form
+        Field[FormField]:::form
+        Formula[FormulaField]:::form
+        Logic[Lookup/Logic]:::form
+        
+        Module -->|Groups| FormDef
+        FormDef -->|Composed of| Section
+        Section -->|Contains| Field
+        Field -->|Calculated by| Formula
+        Field -->|Uses| Logic
+    end
+
+    %% Subgraph: Data Collection
+    subgraph Data_Collection [Data Collection]
+        direction TB
+        Record[FormRecords 1-15]:::data
+        Event[FormEvent]:::data
+        SubRecord[SubformRecord]:::data
+        
+        User -->|Submits| Record
+        FormDef -->|Defines Structure| Record
+        Record -->|Triggers| Event
+        Record -->|Contains| SubRecord
+    end
+
+    %% Subgraph: HR & Payroll
+    subgraph HR_Payroll [HR & Payroll]
+        direction TB
+        Emp[Employee]:::hr
+        Attend[Attendance]:::hr
+        Leave[Leave/TimeOff]:::hr
+        Payroll[PayrollRecord]:::hr
+        Config[PayrollConfig]:::hr
+        
+        User -->|Linked to| Emp
+        Emp -->|Generates| Attend
+        Emp -->|Requests| Leave
+        Emp -->|Receives| Payroll
+        Attend -->|Feeds into| Payroll
+        Leave -->|Feeds into| Payroll
+        Config -->|Rules for| Payroll
+    end
+
+    %% Subgraph: System & Audit
+    subgraph System_Ops [System Operations]
+        direction TB
+        Audit[AuditLog]:::system
+        Import[ImportJob]:::system
+        Export[ExportJob]:::system
+        Share[DataSharingRule]:::system
+        
+        User -->|Actions Logged| Audit
+        User -->|Initiates| Import
+        User -->|Initiates| Export
+        OrgUnit -->|Governed by| Share
+    end
+
+    %% Cross-Module Links
+    Org -->|Defines| Role
+    Org -->|Owns| Module
+    Module -->|Linked to| Perm
+    Record -->|References| Emp

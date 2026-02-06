@@ -1,0 +1,40 @@
+flowchart TB
+    subgraph FormBuilder["Form Builder"]
+        FormModule[(FormModule)]
+        Form[(Form)]
+        FormSection[(FormSection)]
+        FormField[(FormField)]
+        Subform[(Subform)]
+    end
+
+    subgraph DataCapture["Data Capture"]
+        UserInput[User Input]
+        Validation[Field Validation]
+    end
+
+    subgraph Storage["Data Storage"]
+        FormRecords[(FormRecord 1-15)]
+        SubformRecord[(SubformRecord)]
+        FormTableMapping[(FormTableMapping)]
+    end
+
+    subgraph Enhancement["Field Enhancement"]
+        FormulaField[(FormulaField)]
+        LookupSource[(LookupSource)]
+        LookupFieldRelation[(LookupFieldRelation)]
+    end
+
+    FormModule --> Form
+    Form --> FormSection
+    FormSection --> FormField
+    Form --> Subform
+    Subform --> FormField
+    
+    UserInput --> Validation
+    Validation --> FormRecords
+    Validation --> SubformRecord
+    
+    Form --> FormTableMapping
+    FormField --> FormulaField
+    FormField --> LookupFieldRelation
+    LookupSource --> LookupFieldRelation

@@ -1,0 +1,26 @@
+flowchart TB
+    subgraph Import
+        UploadFile[Upload File]
+        ImportJob[(ImportJob)]
+        ImportFieldMapping[(ImportFieldMapping)]
+        ImportRow[(ImportRow)]
+    end
+
+    subgraph Target
+        Form[(Form)]
+        FormRecords[(Form Records)]
+    end
+
+    subgraph Export
+        ExportJob[(ExportJob)]
+        DownloadFile[Download File]
+    end
+
+    UploadFile --> ImportJob
+    ImportJob --> ImportFieldMapping
+    ImportJob --> ImportRow
+    ImportRow --> FormRecords
+    
+    Form --> ExportJob
+    FormRecords --> ExportJob
+    ExportJob --> DownloadFile

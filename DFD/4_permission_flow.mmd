@@ -1,0 +1,17 @@
+flowchart TB
+    User[(User)] --> UserUnitAssignment[(UserUnitAssignment)]
+    UserUnitAssignment --> Role[(Role)]
+    Role --> RolePermission[(RolePermission)]
+    RolePermission --> Permission[(Permission)]
+    
+    User --> UserPermission[(UserPermission)]
+    UserPermission --> Permission
+    
+    User --> UserPermissionOverride[(UserPermissionOverride)]
+    UserPermissionOverride --> Permission
+    
+    Permission --> AccessDecision{Access Decision}
+    
+    RolePermission --> FormModule[(FormModule)]
+    RolePermission --> Form[(Form)]
+    RolePermission --> FormSection[(FormSection)]

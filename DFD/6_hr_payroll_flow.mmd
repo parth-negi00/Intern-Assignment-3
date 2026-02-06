@@ -1,0 +1,29 @@
+flowchart LR
+    subgraph Employees
+        User[(User)]
+        Employee[(Employee)]
+    end
+
+    subgraph TimeTracking
+        Attendance[(Attendance)]
+    end
+
+    subgraph LeaveManagement
+        LeaveType[(LeaveType)]
+        LeaveRule[(LeaveRule)]
+    end
+
+    subgraph Payroll
+        PayrollConfiguration[(PayrollConfiguration)]
+        PayrollRecord[(PayrollRecord)]
+    end
+
+    User --> Employee
+    User --> Attendance
+    Employee --> PayrollRecord
+    
+    LeaveType --> LeaveRule
+    LeaveRule --> PayrollRecord
+    
+    PayrollConfiguration --> PayrollRecord
+    Attendance --> PayrollRecord

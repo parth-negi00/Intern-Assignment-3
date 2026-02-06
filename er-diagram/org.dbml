@@ -1,0 +1,53 @@
+// Organisation System
+
+Table users {
+  id String [pk]
+  email String [not null]
+  username String
+  status Enum
+  organizationId String [ref: > organizations.id, note: 'belongs to']
+}
+
+Table user_sessions {
+  id String [pk]
+  userId String [not null, ref: > users.id, note: 'has']
+  token String [not null]
+  expiresAt DateTime
+}
+
+Table otp_codes {
+  id String [pk]
+  userId String [not null, ref: > users.id, note: 'requests']
+  code String [not null]
+  expiresAt DateTime
+  isUsed Boolean
+}
+
+Table login_history {
+  id String [pk]
+  userId String [not null, ref: > users.id, note: 'logs']
+  loginAt DateTime [not null]
+  ipAddress String
+  userAgent String
+}
+
+Table organizations {
+  id String [pk]
+  name String [not null]
+  ownerId String [ref: > users.id]
+}
+
+Table organization_units {
+  id String [pk]
+  name String [not null]
+  parentId String [ref: > organization_units.id, note: 'parent/child - self-referencing hierarchy']
+  organizationId String [not null, ref: > organizations.id, note: 'contains']
+}
+
+// Relationships
+Ref: users.organizationId > organizations.id [note: 'belongs to']
+Ref: user_sessions.userId > users.id [note: 'has']
+Ref: otp_codes.userId > users.id [note: 'requests']
+Ref: login_history.userId > users.id [note: 'logs']
+Ref: organization_units.organizationId > organizations.id [note: 'contains']
+Ref: organization_units.parentId > organization_units.id [note: 'parent/child']

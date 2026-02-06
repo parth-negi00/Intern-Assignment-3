@@ -1,0 +1,333 @@
+erDiagram
+    User {
+        String id PK
+        String email
+        String username
+        String password
+        AuthProvider provider
+        UserStatus status
+        Boolean email_verified
+        String first_name
+        String last_name
+        String mobile
+        String department
+        String organizationId FK
+    }
+
+    Organization {
+        String id PK
+        String name
+        String ownerId FK
+    }
+
+    OrganizationUnit {
+        String id PK
+        String name
+        String organizationId FK
+        String parentId FK
+        Int level
+        Boolean isActive
+    }
+
+    Role {
+        String id PK
+        String name
+        Boolean isAdmin
+        String organizationId FK
+        String parentId FK
+    }
+
+    Permission {
+        String id PK
+        String name
+        PermissionCategory category
+        String resource
+    }
+
+    UserSession {
+        String id PK
+        String userId FK
+        String token
+        DateTime expiresAt
+    }
+
+    OTPCode {
+        String id PK
+        String userId FK
+        String code
+        OTPType type
+    }
+
+    UserPermission {
+        String id PK
+        String userId FK
+        String permissionId FK
+        String moduleId FK
+        String formId FK
+        Boolean granted
+    }
+
+    RolePermission {
+        String id PK
+        String roleId FK
+        String permissionId FK
+        String moduleId FK
+        String formId FK
+    }
+
+    UnitRoleAssignment {
+        String id PK
+        String unitId FK
+        String roleId FK
+    }
+
+    UserUnitAssignment {
+        String id PK
+        String userId FK
+        String unitId FK
+        String roleId FK
+    }
+
+    DataSharingRule {
+        String id PK
+        String organizationId FK
+        String sourceUnitId FK
+        String targetUnitId FK
+        AccessLevel accessLevel
+    }
+
+    FormModule {
+        String id PK
+        String name
+        String organizationId FK
+        String parentId FK
+        String moduleType
+    }
+
+    Form {
+        String id PK
+        String moduleId FK
+        String name
+        Boolean isPublished
+        String storage_table
+    }
+
+    FormSection {
+        String id PK
+        String formId FK
+        String title
+    }
+
+    FormField {
+        String id PK
+        String sectionId FK
+        String subformId FK
+        String type
+        String label
+    }
+
+    Subform {
+        String id PK
+        String formId FK
+        String parentSubformId FK
+        String name
+    }
+
+    SubformRecord {
+        String id PK
+        String subformId FK
+        Json data
+    }
+
+    FormTableMapping {
+        String id PK
+        String formId FK
+        String storageTable
+    }
+
+    FormRecord {
+        String id PK
+        String formId FK
+        Json recordData
+        String userId FK
+        String status
+        String NOTE "Represents FormRecord1 to FormRecord15"
+    }
+
+    FormEvent {
+        String id PK
+        String formId FK
+        String eventType
+    }
+
+    LookupSource {
+        String id PK
+        String name
+        String type
+        String sourceModuleId FK
+        String sourceFormId FK
+    }
+
+    LookupFieldRelation {
+        String id PK
+        String lookupSourceId FK
+        String formFieldId FK
+        String formId FK
+    }
+
+    Employee {
+        String id PK
+        String userId FK
+        String employeeName
+        String department
+        String designation
+        EmployeeStatus status
+    }
+
+    Activity {
+        String id PK
+        String type
+        String userId FK
+        String organizationId FK
+    }
+
+    PayrollConfiguration {
+        String id PK
+        String organizationId FK
+        Json attendanceFormIds
+    }
+
+    LeaveType {
+        String id PK
+        String name
+        String code
+        LeaveTypeCategory category
+    }
+
+    LeaveRule {
+        String id PK
+        String leaveTypeId FK
+        String name
+    }
+
+    PayrollRecord {
+        String id PK
+        String employeeId
+        Int month
+        Int year
+        Decimal netSalary
+    }
+
+    Attendance {
+        String id PK
+        String userId FK
+        String date
+        Boolean checkedIn
+        Boolean checkedOut
+    }
+
+    FormulaField {
+        String id PK
+        String formFieldId FK
+        String expression
+    }
+
+    ImportJob {
+        String id PK
+        String moduleId FK
+        String formId FK
+        ImportStatus status
+    }
+
+    ImportFieldMapping {
+        String id PK
+        String importJobId FK
+        String targetFieldId
+    }
+
+    ImportRow {
+        String id PK
+        String importJobId FK
+        Int rowNumber
+        String status
+    }
+
+    ExportJob {
+        String id PK
+        String moduleId FK
+        String formId FK
+        ImportStatus status
+    }
+
+    AuditLog {
+        String id PK
+        String userId FK
+        String organizationId FK
+        String action
+        String module
+    }
+
+    %% Relationships
+    User ||--o{ UserSession : has
+    User ||--o{ OTPCode : has
+    User ||--o{ Organization : "belongs to (as member)"
+    User ||--o| Organization : "owns"
+    User ||--o| Employee : "profile"
+    User ||--o{ Attendance : "logs"
+    User ||--o{ Activity : "performs"
+    User ||--o{ FormRecord : "submits"
+    User ||--o{ UserPermission : "has"
+    User ||--o{ UserUnitAssignment : "assigned to"
+    User ||--o{ UserPermissionOverride : "has overrides"
+    User ||--o{ LoginHistory : "has history"
+    User ||--o{ AuditLog : "triggers"
+
+    Organization ||--o{ OrganizationUnit : "contains"
+    Organization ||--o{ Role : "defines"
+    Organization ||--o{ FormModule : "has"
+    Organization ||--o{ DataSharingRule : "has"
+
+    OrganizationUnit ||--o{ OrganizationUnit : "parent of"
+    OrganizationUnit ||--o{ UnitRoleAssignment : "has roles"
+    OrganizationUnit ||--o{ UserUnitAssignment : "has users"
+    OrganizationUnit ||--o{ DataSharingRule : "source/target for"
+
+    Role ||--o{ Role : "parent of"
+    Role ||--o{ RolePermission : "has permissions"
+    Role ||--o{ UnitRoleAssignment : "assigned to unit"
+    Role ||--o{ UserUnitAssignment : "assigned to user"
+
+    Permission ||--o{ RolePermission : "in role"
+    Permission ||--o{ UserPermission : "assigned to user"
+    Permission ||--o{ UserPermissionOverride : "overridden for user"
+
+    FormModule ||--o{ FormModule : "parent of"
+    FormModule ||--o{ Form : "contains"
+    FormModule ||--o{ LookupSource : "source for"
+
+    Form ||--o{ FormSection : "contains"
+    Form ||--o{ Subform : "contains"
+    Form ||--o{ FormRecord : "has records"
+    Form ||--o{ FormEvent : "has events"
+    Form ||--o{ FormTableMapping : "maps to"
+    Form ||--o{ LookupSource : "source for"
+
+    FormSection ||--o{ FormField : "contains"
+
+    FormField ||--o{ Subform : "can be subform"
+    FormField ||--o{ FormulaField : "calculated via"
+    FormField ||--o{ LookupFieldRelation : "lookup config"
+
+    Subform ||--o{ Subform : "nested subform"
+    Subform ||--o{ FormField : "contains fields"
+    Subform ||--o{ SubformRecord : "has records"
+
+    ImportJob ||--o{ ImportFieldMapping : "has mappings"
+    ImportJob ||--o{ ImportRow : "has rows"
+
+    LeaveType ||--o{ LeaveRule : "has rules"
+
+    LookupSource ||--o{ LookupFieldRelation : "related fields"
+
+    Employee ||--o{ PayrollRecord : "has payroll"
+    Employee ||--o{ FormRecord : "referenced in (record14)"

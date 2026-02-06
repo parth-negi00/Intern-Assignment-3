@@ -1,0 +1,67 @@
+Table Organization {
+  id String [pk]
+  name String
+}
+
+Table OrganizationUnit {
+  id String [pk]
+  name String
+}
+
+Table User {
+  id String [pk]
+  username String
+  email String
+}
+
+Table Role {
+  id String [pk]
+  name String
+  isAdmin Boolean
+  parentId String [ref: > Role.id]
+  organizationId String [ref: > Organization.id]
+}
+
+Enum PermissionCategory {
+  SYSTEM
+  UNIT
+}
+
+Table Permission {
+  id String [pk]
+  resource String
+  category PermissionCategory
+}
+
+// Relationships
+
+Table UserUnitAssignment {
+  id String [pk]
+  userId String [ref: > User.id]
+  unitId String [ref: > OrganizationUnit.id]
+  roleId String [ref: > Role.id]
+}
+
+Table UnitRoleAssignment {
+  id String [pk]
+  unitId String [ref: > OrganizationUnit.id]
+  roleId String [ref: > Role.id]
+}
+
+Table RolePermission {
+  id String [pk]
+  roleId String [ref: > Role.id]
+  permissionId String [ref: > Permission.id]
+}
+
+Table UserPermission {
+  id String [pk]
+  userId String [ref: > User.id]
+  permissionId String [ref: > Permission.id]
+}
+
+Table UserPermissionOverride {
+  id String [pk]
+  userId String [ref: > User.id]
+  permissionId String [ref: > Permission.id]
+}

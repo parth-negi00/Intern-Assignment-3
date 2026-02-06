@@ -1,0 +1,72 @@
+// Form Builder System
+
+Table form_modules {
+  id String [pk]
+  name String [not null]
+  parentId String [ref: > form_modules.id, note: 'nested - self-referencing for hierarchy']
+}
+
+Table forms {
+  id String [pk]
+  name String [not null]
+  moduleId String [not null, ref: > form_modules.id]
+  isPublished Boolean
+  settings Json
+}
+
+Table form_sections {
+  id String [pk]
+  name String [not null]
+  formId String [not null, ref: > forms.id]
+  sortOrder Int
+}
+
+Table subforms {
+  id String [pk]
+  name String [not null]
+  formId String [not null, ref: > forms.id]
+  parentId String [ref: > subforms.id, note: 'nested - self-referencing for hierarchy']
+}
+
+Table form_fields {
+  id String [pk]
+  type String [not null]
+  label String [not null]
+  validation Json
+  sectionId String [ref: > form_sections.id]
+  subformId String [ref: > subforms.id]
+}
+
+Table formula_fields {
+  id String [pk]
+  fieldId String [not null, ref: - form_fields.id, note: 'calculated via']
+  formula String [not null]
+  dependencies String[]
+}
+
+Table form_record_shards {
+  id String [pk]
+  formId String [not null, ref: > forms.id]
+  recordData Json [not null]
+  submittedBy String [not null]
+  createdAt DateTime
+  updatedAt DateTime
+}
+
+Table subform_records {
+  id String [pk]
+  subformId String [not null, ref: > subforms.id]
+  parentRecordId String
+  recordData Json [not null]
+  createdAt DateTime
+  updatedAt DateTime
+}
+
+// Relationships
+Ref: forms.moduleId > form_modules.id [note: 'contains']
+Ref: form_sections.formId > forms.id [note: 'divided into']
+Ref: subforms.formId > forms.id [note: 'has']
+Ref: form_fields.sectionId > form_sections.id [note: 'contains']
+Ref: form_fields.subformId > subforms.id [note: 'contains']
+Ref: form_record_shards.formId > forms.id [note: 'stores data in']
+Ref: subform_records.subformId > subforms.id [note: 'stores data in']

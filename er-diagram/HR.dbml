@@ -1,0 +1,64 @@
+// HR, Payroll & Attendance System
+
+Table users {
+  id String [pk]
+  // Referenced from User Management - core user table
+}
+
+Table employees {
+  id String [pk]
+  userId String [not null, ref: - users.id, note: 'profile - one-to-one with User']
+  designation String
+  totalSalary Decimal
+  status Enum
+}
+
+Table attendance {
+  id String [pk]
+  userId String [not null, ref: > users.id, note: 'logs']
+  date String [not null]
+  checkInTime String
+  checkOutTime String
+}
+
+Table payroll_records {
+  id String [pk]
+  employeeId String [not null, ref: > employees.id, note: 'paid']
+  month Int [not null]
+  year Int [not null]
+  netSalary Decimal [not null]
+}
+
+Table payroll_configurations {
+  id String [pk]
+  name String [not null]
+  settings Json
+}
+
+Table leave_types {
+  id String [pk]
+  name String [not null]
+  description String
+  // Configured by PayrollConfiguration
+}
+
+Table leave_rules {
+  id String [pk]
+  leaveTypeId String [not null, ref: > leave_types.id, note: 'defined by']
+  maxDays Int
+  carryForward Boolean
+  conditions Json
+}
+
+Table form_record_14 {
+  id String [pk]
+  // Linked to Attendance for form-based tracking
+}
+
+// Relationships
+Ref: employees.userId - users.id [note: 'profile']
+Ref: attendance.userId > users.id [note: 'logs']
+Ref: payroll_records.employeeId > employees.id [note: 'paid']
+Ref: leave_rules.leaveTypeId > leave_types.id [note: 'defined by']
+Ref: payroll_configurations.id < leave_types.id [note: 'configures']
+Ref: attendance.id < form_record_14.id [note: 'linked to form']
